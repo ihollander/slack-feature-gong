@@ -1,16 +1,18 @@
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
-const request = require("request");
 
 var player = require("play-sound")((opts = {}));
 
-// Creates express app
+// express app
 const app = express();
 
+// middlewares
+// TODO: add slack authentication middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// TODO: store these in a db and add CR(UD) functionality
 let cheers = [
   "Great job! :tada:",
   "Very cool and awesome! :cooldoge:",
@@ -18,11 +20,12 @@ let cheers = [
   "Nice work! You're amazing! :partyparrot:"
 ];
 
-// route
+// only one route for this command, message parsing for different commands
 app.post("/gong", (req, res) => {
   console.log(req.body);
   const { user_id, text } = req.body;
 
+  // add new cheer
   if (text.match(/NEW_CHEER/)) {
     const newCheer = text.replace("NEW_CHEER", "").trim();
     cheers.push(newCheer);
@@ -38,6 +41,8 @@ app.post("/gong", (req, res) => {
     };
 
     res.send(response);
+
+    // default response
   } else {
     const randomIndex = Math.floor(Math.random() * cheers.length);
     const randomCheer = cheers[randomIndex];
