@@ -1,16 +1,19 @@
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
+const player = require("play-sound")((opts = {}));
 
-var player = require("play-sound")((opts = {}));
+const slackAuth = require("./middleware/slackAuth");
+const rawBody = require("./middleware/rawBody");
 
 // express app
 const app = express();
 
 // middlewares
-// TODO: add slack authentication middleware
+app.use(rawBody);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(slackAuth);
 
 // TODO: store these in a db and add CR(UD) functionality
 let cheers = [
