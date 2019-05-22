@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
-const player = require("play-sound")((opts = {}));
+const player = require("play-sound")({ player: "mpg123" });
 
 const slackAuth = require("./middleware/slackAuth");
 const rawBody = require("./middleware/rawBody");
@@ -13,7 +13,7 @@ const app = express();
 app.use(rawBody);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(slackAuth);
+// app.use(slackAuth);
 
 // TODO: store these in a db and add CR(UD) functionality
 let cheers = [
@@ -56,7 +56,7 @@ app.post("/gong", (req, res) => {
     };
 
     res.send(response);
-    player.play("gong.mp3");
+    player.play("gong.mp3")
   }
 });
 
